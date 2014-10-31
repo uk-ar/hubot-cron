@@ -66,10 +66,12 @@ module.exports = (robot) ->
     text = ''
     for id, job of JOBS
       room = job.user.reply_to || job.user.room
-      if room == msg.message.user.reply_to or room == msg.message.user.room
+      if room == msg.message.user.reply_to or room.id == msg.message.user.room.id
         text += "#{id}: #{job.pattern} @#{room} \"#{job.message}\"\n"
-    msg.send text if text.length > 0
-
+      if text.length > 0
+        msg.send text 
+      else
+        msg.send "nothing"
   robot.respond /(?:rm|remove|del|delete) job (\d+)/i, (msg) ->
     if (id = msg.match[1]) and unregisterJob(robot, id)
       msg.send "Job #{id} deleted"
